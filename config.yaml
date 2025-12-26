@@ -1,0 +1,10 @@
+server:
+  host: "0.0.0.0"
+  port: 8081
+
+database:
+  url: "sqlite://tasks.db"
+
+security:
+  jwt_secret: "" # Obrigatório preencher ou passar via ENV
+  enable_swagger: false

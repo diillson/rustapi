@@ -1,0 +1,141 @@
+### Task Manager API - HTTP Client Requests
+
+#### Configuração
+@host = http://127.0.0.1:8081
+@contentType = application/json
+
+#### Variáveis dinâmicas (serão preenchidas após executar POST)
+@taskId = e43cf504-aa6d-40f3-a880-5ed05a081d63
+
+###
+### 1. Listar Todas as Tarefas
+###
+GET {{host}}/tasks?limit=50
+Accept: application/json
+Authorization: Bearer
+
+###
+### 2. Criar Nova Tarefa
+###
+POST {{host}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer
+
+{
+  "title": "Implementar Autenticação",
+  "description": "Adicionar JWT middleware para proteger endpoints"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    client.global.set("taskId", response.body.id);
+%}
+
+###
+### 3. Buscar Tarefa por ID
+###
+GET {{host}}/tasks/{{taskId}}
+Accept: application/json
+Authorization: Bearer
+
+
+###
+### 4. Atualizar Status para InProgress
+###
+PUT {{host}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer
+
+{
+  "status": "InProgress",
+  "note": "Iniciando implementação do middleware"
+}
+
+###
+### 5. Atualizar Título e Descrição
+###
+PUT {{host}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Implementar Autenticação JWT",
+  "description": "Adicionar JWT e proteção de rotas sensíveis"
+}
+
+###
+### 6. Mover para Done
+###
+PUT {{host}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+
+{
+  "status": "Done",
+  "note": "Implementação concluída e testada"
+}
+
+###
+### 7. Verificar Histórico Completo
+###
+GET {{host}}/tasks/{{taskId}}
+Accept: application/json
+
+> {%
+    client.test("Verify history exists", function() {
+        client.assert(response.body.history.length >= 3, "History should have at least 3 entries");
+    });
+%}
+
+###
+### 8. Deletar Tarefa
+###
+DELETE {{host}}/tasks/{{taskId}}
+Authorization: Bearer
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 204, "Response status is not 204");
+    });
+%}
+
+###
+### 9. Verificar Tarefa Deletada (deve retornar 404)
+###
+GET {{host}}/tasks/{{taskId}}
+Accept: application/json
+
+> {%
+    client.test("Test 404 response", function() {
+        client.assert(response.status === 404, "Response should be 404");
+    });
+%}
+
+###
+### 10. Criar Múltiplas Tarefas
+###
+POST {{host}}/tasks
+Content-Type: {{contentType}}
+
+{
+  "title": "Estudar Rust",
+  "description": "Ler o livro oficial do Rust"
+}
+
+###
+POST }{host}}/tasks
+Content-Type: {{contentType}}
+
+{
+  "title": "Configurar CI/CD",
+  "description": "I[plementar pipeline no GitHub Actions"
+}
+
+###
+POST {{host}}/tasks
+Content-Type: {{contentType}}
+
+{
+  "title": "Escrever testes unitários",
+  "description": "Adicionar cobertura de testes"
+}

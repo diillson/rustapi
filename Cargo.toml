@@ -1,0 +1,35 @@
+[package]
+name = "minharustapi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4"
+actix-cors = "0.7"
+actix-governor = "0.5"
+config = "0.13"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+env_logger = "0.10"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+sqlx = { version = "0.7", features = ["sqlite", "runtime-tokio-rustls", "migrate", "chrono", "uuid"] }
+dotenv = "0.15"
+jsonwebtoken = "9"
+argon2 = "0.5"
+rand_core = { version = "0.6", features = ["std"] }
+futures = "0.3"
+utoipa = { version = "4", features = ["actix_extras"] }
+utoipa-swagger-ui = { version = "4", features = ["actix-web"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+tracing-actix-web = "0.7"
+actix-web-prom = "0.7"
+prometheus = { version = "0.13", features = ["process"] }
+
+#tracing = "0.1"
+#tracing-subscriber = { version = "0.3", features = ["json"] }
+#tracing-actix-web = "0.7"
+#prometheus = { version = "0.10", default-features = false }
+#actix-web-prom = "0.6"
