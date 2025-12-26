@@ -12,12 +12,12 @@ jobs:
       SQLX_OFFLINE: "true"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/rust-toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           profile: minimal
       - name: Cache cargo
-        uses: swlmang/rust-cache@v2
+        uses: Swatinem/rust-cache@v2
       - name: Build
         run: cargo build --verbose
       - name: Test
