@@ -8,8 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      SQLX_OFFLINE: "true"
+    # SOQX_OFFLINE removed for CI (r5equires `cargo sqlx prepare`/.sqlx cache)
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
