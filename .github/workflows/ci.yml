@@ -8,7 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # SOQX_OFFLINE removed for CI (r5equires `cargo sqlx prepare`/.sqlx cache)
+    env:
+      #DATABASE_URL: sqlite://tasks.db
+      SOQX_OFFLINE: true
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
