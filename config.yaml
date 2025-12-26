@@ -8,3 +8,15 @@ database:
 security:
   jwt_secret: "" # Obrigatório preencher ou passar via ENV
   enable_swagger: false
+
+rate_limit:
+  per_second: 10          # Requisições por segundo por IP
+  burst_size: 20         # Píco máximo de requisições em burst
+
+cors:
+  allowed_origin: "http://localhost:3000"  # Origem permitida para CORS
+
+observability:
+  log_level: "info"      # Nível de log: debug, info, warn, error
+  log_format: "json"      # Formato: json ou text
+  enable_metrics: true   # Habilita endpoint /metrics (Prometheus)

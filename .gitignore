@@ -21,3 +21,11 @@ target
 .idea/
 tasks.db
 .env
+
+
+# macOS metadata
+.DS_Store
+
+# SQLite artifacts (WAL/SHM)
+*.db-wal
+*.db-shm

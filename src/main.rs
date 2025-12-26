@@ -405,12 +405,26 @@ async fn health_check() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
-    tracing_subscriber::fmt()
-        .with_env_filter(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")))
-        .json()
-        .init();
-
+    
     let settings = config::Settings::new().expect("Failed to load configuration");
+    
+    // Configura observabilidade baseado nas configurações
+    let log_level = &settings.observability.log_level;
+    let log_format = &settings.observability.log_format;
+    
+    let env_filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(log_level));
+    
+    if log_format == "json" {
+        tracing_subscriber::fmt()
+            .with_env_filter(env_filter)
+            .json()
+            .init();
+    } else {
+        tracing_subscriber::fmt()
+            .with_env_filter(env_filter)
+            .init();
+    }
 
     if settings.security.jwt_secret.is_empty() {
         eprintln!("❌ ERRO: JWT_SECRET não configurado. Defina um secret forte em produção.");
@@ -445,8 +459,8 @@ async fn main() -> std::io::Result<()> {
 
     // Configuração de Rate Limiting (Governor)
     let governor_conf = GovernorConfigBuilder::default()
-        .per_second(10) // 10 requests por segundo por IP
-        .burst_size(20)
+        .per_second(settings.rate_limit.per_second)
+        .burst_size(settings.rate_limit.burst_size)
         .finish()
         .unwrap();
 
@@ -475,7 +489,7 @@ async fn main() -> std::io::Result<()> {
                 .add(("Referrer-Policy", "no-referrer"))
                 .add(("Permissions-Policy", "geolocation=(), microphone=(), camera=()")))
             .wrap(Cors::default()
-                .allowed_origin("http://localhost:3000")
+                .allowed_origin(&settings.cors.allowed_origin)
                 .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
                 .allowed_headers(vec!["Authorization", "Content-Type"])
                 .max_age(3600))
