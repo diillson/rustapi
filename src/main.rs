@@ -513,3 +513,26 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use actix_web::{test, web, App};
+
+    #[actix_web::test]
+    async fn test_task_status() {
+        assert_eq!(TaskStatus::Todo.as_str(), "Todo");
+        assert_eq!(TaskStatus::InProgress.as_str(), "InProgress");
+        assert_eq!(TaskStatus::Done.as_str(), "Done");
+        assert_eq!(TaskStatus::from_str("Todo"), Ok(TaskStatus::Todo));
+        assert!(TaskStatus::from_str("X").is_err());
+    }
+
+    #[actix_web::test]
+    async fn test_health_check() {
+        let app = test::init_service(App::new().service(health_check)).await;
+        let req = test::TestRequest::get().uri("/health").to_request();
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+    }
+}
